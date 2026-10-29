@@ -2,7 +2,7 @@
  * 離線快取：在沒有網路的地方（健身房地下室、山上）也打得開。
  * 改了任何檔案就把 VERSION 加一，手機下次連網時會換成新版。
  */
-const VERSION = 'fit-record-v1';
+const VERSION = 'fit-record-v2';
 const FILES = [
   './', 'index.html', 'style.css', 'app.js', 'data.js', 'manifest.webmanifest',
   'favicon-32.png', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png',
