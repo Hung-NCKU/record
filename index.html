@@ -36,17 +36,16 @@
     <!-- 飲食 -->
     <form id="form-meal" class="card stack" data-type="meal" autocomplete="off">
       <h2><span class="edit-flag" hidden>編輯中 · </span>記一筆飲食</h2>
-      <div class="two">
-        <label>日期<input name="date" type="date" required /></label>
-        <label>餐別
-          <select name="meal_type">
-            <option value="breakfast">早餐</option>
-            <option value="lunch">午餐</option>
-            <option value="dinner">晚餐</option>
-            <option value="snack">點心</option>
-          </select>
-        </label>
-      </div>
+      <!-- 日期自己一列：iPhone 的日期欄位縮不窄，跟別的欄位並排會蓋過去 -->
+      <label>日期<input name="date" type="date" required /></label>
+      <label>餐別
+        <select name="meal_type">
+          <option value="breakfast">早餐</option>
+          <option value="lunch">午餐</option>
+          <option value="dinner">晚餐</option>
+          <option value="snack">點心</option>
+        </select>
+      </label>
       <label>食物名稱<input name="name" required maxlength="120" list="meal-memory" placeholder="例如：雞腿便當" /></label>
       <datalist id="meal-memory"></datalist>
       <label>份量（選填）<input name="portion" maxlength="60" placeholder="例如：一個、大杯" /></label>
@@ -64,8 +63,8 @@
     <!-- 訓練 -->
     <form id="form-workout" class="card stack" data-type="workout" autocomplete="off" hidden>
       <h2><span class="edit-flag" hidden>編輯中 · </span>記一筆訓練</h2>
-      <div class="two">
-        <label>日期<input name="date" type="date" required /></label>
+      <label>日期<input name="date" type="date" required /></label>
+      <div>
         <label>部位
           <select name="category">
             <option value="chest">胸</option>
@@ -141,10 +140,8 @@
           </select>
         </label>
       </div>
-      <div class="two">
-        <label>日期<input name="date" type="date" required /></label>
-        <label>備註（選填）<input name="note" maxlength="200" /></label>
-      </div>
+      <label>日期<input name="date" type="date" required /></label>
+      <label>備註（選填）<input name="note" maxlength="200" /></label>
       <div class="actions"><button type="button" class="cancel-edit" hidden>取消編輯</button><button class="primary" type="submit">儲存</button></div>
     </form>
 
