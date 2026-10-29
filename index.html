@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#fff4df" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="外出記錄" />
+  <title>外出記錄</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="favicon-32.png" type="image/png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <img src="icon-192.png" alt="" width="32" height="32" />
+      <div><b>外出記錄</b><span class="sub">回家再匯入健身養寵</span></div>
+    </div>
+    <button id="export-btn" class="primary small-btn" type="button">匯出 <span id="pending-count" class="pill">0</span></button>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="meal" aria-selected="true">🍚 飲食</button>
+    <button role="tab" data-tab="workout">🏋️ 訓練</button>
+    <button role="tab" data-tab="weight">⚖️ 體態</button>
+    <button role="tab" data-tab="expense">💰 記帳</button>
+    <button role="tab" data-tab="list">📋 清單</button>
+  </nav>
+
+  <main>
+    <div id="toast" class="toast" role="status" hidden></div>
+
+    <!-- 飲食 -->
+    <form id="form-meal" class="card stack" data-type="meal" autocomplete="off">
+      <h2><span class="edit-flag" hidden>編輯中 · </span>記一筆飲食</h2>
+      <div class="two">
+        <label>日期<input name="date" type="date" required /></label>
+        <label>餐別
+          <select name="meal_type">
+            <option value="breakfast">早餐</option>
+            <option value="lunch">午餐</option>
+            <option value="dinner">晚餐</option>
+            <option value="snack">點心</option>
+          </select>
+        </label>
+      </div>
+      <label>食物名稱<input name="name" required maxlength="120" list="meal-memory" placeholder="例如：雞腿便當" /></label>
+      <datalist id="meal-memory"></datalist>
+      <label>份量（選填）<input name="portion" maxlength="60" placeholder="例如：一個、大杯" /></label>
+      <div class="two">
+        <label>熱量 kcal<input name="kcal" type="number" inputmode="decimal" min="0" max="20000" step="any" placeholder="不知道可留空" /></label>
+        <label>蛋白質 g<input name="protein_g" type="number" inputmode="decimal" min="0" max="2000" step="any" /></label>
+        <label>碳水 g<input name="carb_g" type="number" inputmode="decimal" min="0" max="2000" step="any" /></label>
+        <label>脂肪 g<input name="fat_g" type="number" inputmode="decimal" min="0" max="2000" step="any" /></label>
+      </div>
+      <label>備註（選填）<input name="note" maxlength="500" /></label>
+      <p class="hint">記過的食物再輸入一次名稱會自動帶入營養素。不知道熱量就留空，回家後到飲食頁修改，或請教練估算。</p>
+      <div class="actions"><button type="button" class="cancel-edit" hidden>取消編輯</button><button class="primary" type="submit">儲存</button></div>
+    </form>
+
+    <!-- 訓練 -->
+    <form id="form-workout" class="card stack" data-type="workout" autocomplete="off" hidden>
+      <h2><span class="edit-flag" hidden>編輯中 · </span>記一筆訓練</h2>
+      <div class="two">
+        <label>日期<input name="date" type="date" required /></label>
+        <label>部位
+          <select name="category">
+            <option value="chest">胸</option>
+            <option value="back">背</option>
+            <option value="shoulders">肩</option>
+            <option value="arms">手臂</option>
+            <option value="legs">腿</option>
+            <option value="core">核心</option>
+            <option value="cardio">有氧</option>
+            <option value="other">其他</option>
+          </select>
+        </label>
+      </div>
+      <label>動作名稱<input name="exercise" required maxlength="120" list="exercise-list" placeholder="例如：槓鈴深蹲" /></label>
+      <datalist id="exercise-list"></datalist>
+
+      <div class="strength-only stack">
+        <div class="seg" role="radiogroup" aria-label="記錄方式">
+          <button type="button" data-mode="reps" class="on">次數</button>
+          <button type="button" data-mode="time">秒數</button>
+        </div>
+        <div id="sets" class="sets"></div>
+        <button type="button" id="add-set">＋ 加一組</button>
+      </div>
+
+      <div class="cardio-only stack" hidden>
+        <div class="two">
+          <label>時間（分鐘）<input name="minutes" type="number" inputmode="decimal" min="0.5" max="1440" step="0.5" /></label>
+          <label>手錶熱量 kcal（選填）<input name="calories_kcal" type="number" inputmode="decimal" min="0" max="20000" placeholder="留空自動估算" /></label>
+        </div>
+      </div>
+
+      <div class="two">
+        <label>RPE（選填）<input name="rpe" type="number" inputmode="decimal" min="0" max="10" step="0.5" placeholder="1–10" /></label>
+        <label>備註（選填）<input name="note" maxlength="1000" /></label>
+      </div>
+      <div class="actions"><button type="button" class="cancel-edit" hidden>取消編輯</button><button class="primary" type="submit">儲存</button></div>
+    </form>
+
+    <!-- 體態 -->
+    <form id="form-weight" class="card stack" data-type="weight" autocomplete="off" hidden>
+      <h2><span class="edit-flag" hidden>編輯中 · </span>記體態</h2>
+      <label>日期<input name="date" type="date" required /></label>
+      <div class="two">
+        <label>體重 kg<input name="weight_kg" type="number" inputmode="decimal" min="20" max="300" step="0.1" required /></label>
+        <label>體脂 %（選填）<input name="body_fat_pct" type="number" inputmode="decimal" min="1" max="70" step="0.1" /></label>
+        <label>腰圍 cm（選填）<input name="waist_cm" type="number" inputmode="decimal" min="30" max="250" step="0.1" /></label>
+      </div>
+      <label>備註（選填）<input name="note" maxlength="500" /></label>
+      <p class="hint">同一天只會保留一筆體態，匯入時會跟電腦上的那天合併。</p>
+      <div class="actions"><button type="button" class="cancel-edit" hidden>取消編輯</button><button class="primary" type="submit">儲存</button></div>
+    </form>
+
+    <!-- 記帳 -->
+    <form id="form-expense" class="card stack" data-type="expense" autocomplete="off" hidden>
+      <h2><span class="edit-flag" hidden>編輯中 · </span>記一筆帳</h2>
+      <div class="seg" role="radiogroup" aria-label="收支">
+        <button type="button" data-kind="expense" class="on">支出</button>
+        <button type="button" data-kind="income">收入</button>
+      </div>
+      <div id="categories" class="chips" role="radiogroup" aria-label="分類"></div>
+      <label>項目<input name="item" required maxlength="60" list="expense-memory" placeholder="例如：午餐便當" /></label>
+      <datalist id="expense-memory"></datalist>
+      <div class="two">
+        <label>金額<input name="amount" type="number" inputmode="decimal" min="0.01" max="10000000" step="any" required /></label>
+        <label>付款方式
+          <select name="pay">
+            <option value="cash">現金</option>
+            <option value="card">信用卡</option>
+            <option value="mobile">行動支付</option>
+            <option value="transfer">轉帳</option>
+            <option value="ticket">交通卡</option>
+          </select>
+        </label>
+      </div>
+      <div class="two">
+        <label>日期<input name="date" type="date" required /></label>
+        <label>備註（選填）<input name="note" maxlength="200" /></label>
+      </div>
+      <div class="actions"><button type="button" class="cancel-edit" hidden>取消編輯</button><button class="primary" type="submit">儲存</button></div>
+    </form>
+
+    <!-- 清單 -->
+    <section id="panel-list" class="stack" hidden>
+      <div class="card stack">
+        <h2>匯出與匯入</h2>
+        <p class="hint">回家後按「匯出」存下 .json 檔，再到健身養寵右上角「帳號與設定 → 📥 匯入紀錄」上傳。重複上傳不會多記。</p>
+        <div class="actions wrap">
+          <button id="export-btn-2" class="primary" type="button">匯出全部</button>
+          <button id="clear-exported" type="button">清除已匯出的</button>
+        </div>
+        <p id="storage-note" class="hint"></p>
+      </div>
+      <div id="list"></div>
+    </section>
+  </main>
+
+  <template id="set-row">
+    <div class="set">
+      <span class="set-no"></span>
+      <label class="w">重量 kg<input data-k="weight_kg" type="number" inputmode="decimal" min="0" max="1000" step="any" placeholder="0" /></label>
+      <label class="r">次數<input data-k="reps" type="number" inputmode="numeric" min="1" max="1000" step="1" /></label>
+      <label class="t" hidden>秒數<input data-k="duration_s" type="number" inputmode="numeric" min="1" max="86400" step="1" /></label>
+      <button type="button" class="del" aria-label="刪除這組">×</button>
+    </div>
+  </template>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
